@@ -1,7 +1,11 @@
 {
   "name": "md-links",
   "version": "0.1.0",
+  "type": "module",
   "engines": {
     "node": ">=14.x"
+  },
+  "dependencies": {
+    "md-links": "github:Milates12/BOG004-md-links"
   }
 }
