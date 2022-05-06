@@ -1,44 +1,74 @@
-// module.exports = () => {
-//   // ...
-// };
-
-const fs = require("fs");
-const path = require("path");
-
-//const path = process.argv[2]
-const rutaRelativa = '../../../MD-fuera/ejemplo.txt';
-
-const checkFileExists = (filepath) => {
-    return new Promise((res, rej) => {
-    fs.access(filepath, fs.constants.F_OK, (err) => {
-        const validation = err ? 'does not exist' : 'exists';
-        console.log(validation);
-        if (validation === 'exists'){
-            res(console.log(path.resolve(filepath)));
-        } else if (validation === 'does not exist'){
-            rej(console.log('No existe esa ruta'));
+const fs = require('fs');
+const path = require('path');
+const { marked } = require('marked');
+// const rutaRelativa = process.argv[2]
+const rutaRelativa = '../../../MD-fuera';
+// Validando si esxiste o no existe la ruta
+const checkPathExists = (route) => new Promise((res, rej) => {
+    fs.access(route, fs.constants.F_OK, (err) => {
+        if (!err) {
+            const pathResolve = path.resolve(route);
+            res(pathResolve);
+        } else {
+            rej(err);
         }
     });
 });
-}
+// Obtenemos el arrelo de archivos
+const saveFilesMD = (route) => {
+    let arrPath = [];
+    if (fs.statSync(route).isFile()) {
+        arrPath.push(route);
+    } else {
+        fs.readdirSync(route).forEach((file) => {
+            const saveFiles = path.join(route, file);
+            if (fs.statSync(saveFiles).isDirectory()) {
+                arrPath = arrPath.concat(saveFilesMD(saveFiles));
+            } else {
+                arrPath.push(saveFiles);
+            }
+        });
+    }
+    return arrPath;
+};
 
-checkFileExists(rutaRelativa)
-.then(()=>{})
-.catch(()=>{})
+// Filtrar los archivos .md
+const filterMD = (arrMD) => {
+    const arrFiles = arrMD;
+    const filterFile = arrFiles.filter((file) => path.extname(file) === '.md');
+    // console.log(filterFile)
+    if (filterFile.length > 0) {
+        // console.log(filterFile);
+        return filterFile;
+    }
+    // console.error('No existen archivos .md');
+};
 
-/*Ejemplos de rutas para obtener los argumentos*/
-// const rutaAbsoluta = 'C:/Users/Camila/Desktop/MD-fuera/ejemplo.md';
-// const rutaRelativa = '../../../MD-fuera';
-// const dontExist = process.argv[2]
-// //'../../../MD-fuera/ejemplo.md'
+// Obtener array de links con información sin options
+const getLinks = (arrFiles) => Promise.all(arrFiles.map((fileMD) => new Promise((res, rej) => {
+    fs.readFile(fileMD, 'utf8', (err, data) => {
+        const arr = [];
+        if (err) {
+            rej(err);
+        } else {
+            const renderer = new marked.Renderer();
+            renderer.link = (href, title, text) => {
+                arr.push({
+                    href,
+                    title: text,
+                    file: fileMD,
+                });
+            };
+            marked(data, { renderer });
+            // console.log(saveLinks);
+        }
+        res(arr);
+    });
+})));
 
-// const existingPath = access(dontExist, constants.F_OK)
-// .then(() => {
-//     const absolutePath = resolve(dontExist);
-//     console.log(`El archivo existe y se convierte en ruta absoluta: ${absolutePath}`)
-// })
-// .catch(() => console.error('Please, enter a path to an existing file or directory'));
-
-
-    
-;
+checkPathExists(rutaRelativa)
+    .then((arrPath) => saveFilesMD(arrPath))
+    .then((filesMd) => filterMD(filesMd))
+    .then((links) => getLinks(links))
+    .then((arr) => console.log(arr.flat()))
+    .catch((error) => error);
