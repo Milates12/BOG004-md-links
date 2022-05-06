@@ -2,10 +2,20 @@
   "name": "md-links",
   "version": "0.1.0",
   "type": "commonjs",
+  "scripts": {
+    "test": "jest --verbose --coverage"
+  },
   "engines": {
     "node": ">=14.x"
   },
   "dependencies": {
+    "marked": "^4.0.15",
     "md-links": "github:Milates12/BOG004-md-links"
+  },
+  "devDependencies": {
+    "eslint": "^8.14.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "jest": "^28.0.2"
   }
 }
