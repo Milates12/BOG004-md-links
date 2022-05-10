@@ -1,7 +1,7 @@
 {
   "name": "md-links",
   "version": "0.1.0",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "test": "jest --verbose --coverage"
   },
@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "marked": "^4.0.15",
-    "md-links": "github:Milates12/BOG004-md-links"
+    "md-links": "github:Milates12/BOG004-md-links",
+    "node-fetch": "^3.2.4"
   },
   "devDependencies": {
     "eslint": "^8.14.0",
