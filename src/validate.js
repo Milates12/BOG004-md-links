@@ -1,38 +1,35 @@
-import {
-    access,
-    constants,
-    statSync,
-    readdirSync,
-    readFile,
-} from 'fs';
-import { resolve, join, extname } from 'path';
-import { marked } from 'marked';
-import fetch from 'node-fetch';
-import { error } from 'console';
+const fs = require('fs');
+const path = require('path');
+const { marked } = require('marked');
+
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+
+const chalk = require('chalk');
 
 // const rutaRelativa = process.argv[2]
-const rutaRelativa = '../../../MD-fuera';
+// const rutaRelativa = '../../../MD-fuera';
 // Validando si esxiste o no existe la ruta
 const checkPathExists = (route) => new Promise((res, rej) => {
-        access(route, constants.F_OK, (err) => {
-            if (!err) {
-                const pathResolve = resolve(route);
-                res(pathResolve);
-            } else {
-                rej(err);
-                // throw error('Please enter a exist path');
-            }
-        });
+    fs.access(route, fs.constants.F_OK, (err) => {
+        if (!err) {
+            const pathResolve = path.resolve(route);
+            // console.log(pathResolve);
+            res(pathResolve);
+        } else {
+            rej(console.error(chalk.red('Please enter an existing route')));
+        }
     });
+});
+
 // Obtenemos el arrelo de archivos
 const saveFilesMD = (route) => {
     let arrPath = [];
-    if (statSync(route).isFile()) {
+    if (fs.statSync(route).isFile()) {
         arrPath.push(route);
     } else {
-        readdirSync(route).forEach((file) => {
-            const saveFiles = join(route, file);
-            if (statSync(saveFiles).isDirectory()) {
+        fs.readdirSync(route).forEach((file) => {
+            const saveFiles = path.join(route, file);
+            if (fs.statSync(saveFiles).isDirectory()) {
                 arrPath = arrPath.concat(saveFilesMD(saveFiles));
             } else {
                 arrPath.push(saveFiles);
@@ -43,22 +40,21 @@ const saveFilesMD = (route) => {
 };
 
 // Filtrar los archivos .md
-const filterMD = (arrMD) => {
+const filterMD = (arrMD) => new Promise((res, rej) => {
     const arrFiles = arrMD;
-    const filterFile = arrFiles.filter((file) => extname(file) === '.md');
+    const filterFile = arrFiles.filter((file) => path.extname(file) === '.md');
     // console.log(filterFile)
     if (filterFile.length > 0) {
         // console.log(filterFile);
-        return filterFile;
+        res(filterFile);
+    } if (filterFile.length <= 0) {
+        rej(console.error(chalk.red('Please enter a directory with .md files inside or files with .md extension')));
     }
-    throw error(
-        'Please enter a directory with .md files inside or files with .md extension',
-    );
-};
+});
 
 // Obtener array de links con información sin options
 const getLinks = (arrFiles) => Promise.all(arrFiles.map((fileMD) => new Promise((res, rej) => {
-    readFile(fileMD, 'utf8', (err, data) => {
+    fs.readFile(fileMD, 'utf8', (err, data) => {
         const arr = [];
         if (err) {
             rej(err);
@@ -67,7 +63,7 @@ const getLinks = (arrFiles) => Promise.all(arrFiles.map((fileMD) => new Promise(
             renderer.link = (href, title, text) => {
                 arr.push({
                     href,
-                    title: text,
+                    title: text.substring(0, 50),
                     file: fileMD,
                 });
             };
@@ -78,30 +74,52 @@ const getLinks = (arrFiles) => Promise.all(arrFiles.map((fileMD) => new Promise(
     });
 })));
 
+// Obteniendo el array con la validación
 const httpReq = (objLinks) => {
-    let result = [];
-    result = objLinks.map((link) => {
+    return Promise.all(objLinks.map((link) => {
         return fetch(link.href).then((response) => {
+            const newLink = {
+                href: link.href,
+                    title: link.title,
+                    file: link.file,
+                    status: response.status,
+                    statusText: 'FAIL',
+            };
             if (response.status >= 200 && response.status < 400) {
-                link.status = response.status;
-                link.statusText = response.statusText;
-            } if (response.status >= 400) {
-                link.status = response.status;
-                link.statusText = 'FAIL';
+                newLink.statusText = response.statusText;
             }
-            return link;
+            return newLink;
         });
-    });
-    Promise.all(result).then((respuesta) => console.log(respuesta));
+    }));
 };
 
-// Encadenando la promesa
-checkPathExists(rutaRelativa)
-    .then((arrPath) => saveFilesMD(arrPath))
-    .then((filesMd) => filterMD(filesMd))
-    .then((links) => getLinks(links))
-    .then((arr) => console.log(arr.flat()))
-    .then((request) => httpReq(request))
-    .catch((erro) => console.log(erro));
+// Si el usuario ingresa la opcion stats
+const optionStats = (arr) => {
+        const uniqueLinks = new Set(arr.map((elem) => elem.href));
+        return ({
+            total: arr.length,
+            unique: uniqueLinks.size,
+        });
+};
 
-export { getLinks, checkPathExists };
+// Si el usuario ingresa  --stats y --validate
+
+const statsAndValidate = (arr) => {
+        const uniqueLinks = new Set(arr.map((elem) => elem.href));
+        const brokenLinks = arr.filter((elem) => elem.statusText === 'FAIL');
+        return ({
+            total: arr.length,
+            unique: uniqueLinks.size,
+            broken: brokenLinks.length,
+        });
+};
+
+module.exports = {
+    checkPathExists,
+    saveFilesMD,
+    filterMD,
+    getLinks,
+    httpReq,
+    optionStats,
+    statsAndValidate,
+};

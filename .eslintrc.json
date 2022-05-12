@@ -16,6 +16,10 @@
         "indent":"off",
         "consistent-return":"off",
         "max-len":"off",
-        "arrow-body-style":"off"
+        "arrow-body-style":"off",
+        "no-else-return":"off",
+        "import/extensions":"off",
+        "no-console":"off",
+        "no-shadow":"off"
     }
 }

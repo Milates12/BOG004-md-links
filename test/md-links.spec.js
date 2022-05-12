@@ -1,10 +1,7 @@
-const mdLinks = require('../');
+const { checkPathExists } = require('../src/validate.js');
 
-
-describe('mdLinks', () => {
-
-  it('should...', () => {
-    console.log('FIX ME!');
+describe('checkPathExists', () => {
+  it('should return a promise', () => {
+    expect(typeof checkPathExists).toBe('function');
   });
-
 });
