@@ -1,13 +1,22 @@
 {
-  "name": "md-links",
-  "version": "0.1.0",
+  "name": "@milates12/md-links",
+  "version": "1.0.1",
   "type": "commonjs",
   "main": "index.js",
   "bin": {
     "md-links": "./src/index.js"
   },
+  "author": "milates12 <accscortes09@gmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "test": "jest --verbose --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Milates12/BOG004-md-links.git"
   },
   "engines": {
     "node": ">=14.x"
