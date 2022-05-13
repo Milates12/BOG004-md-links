@@ -10,12 +10,14 @@ const chalk = require('chalk');
 // const rutaRelativa = '../../../MD-fuera';
 // Validando si esxiste o no existe la ruta
 const checkPathExists = (route) => new Promise((res, rej) => {
-    fs.access(route, fs.constants.F_OK, (err) => {
+    fs.access(route, (err) => {
         if (!err) {
+            console.log(path.resolve());
             const pathResolve = path.resolve(route);
             // console.log(pathResolve);
             res(pathResolve);
         } else {
+            console.log(err);
             rej(console.error(chalk.red('Please enter an existing route')));
         }
     });

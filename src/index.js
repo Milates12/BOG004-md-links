@@ -46,3 +46,5 @@ const mdLinks = (path, options) => {
 };
 
 mdLinks(route, options);
+
+module.exports = { mdLinks };

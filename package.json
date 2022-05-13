@@ -1,10 +1,16 @@
 {
   "name": "md-links",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "This is a library that allows you to find links in files with extension .md",
   "type": "commonjs",
   "main": "index.js",
   "bin": {
     "md-links": "./src/index.js"
+  },
+  "author": "milates12 <milatestech@gmail.com>",
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
     "test": "jest --verbose --coverage"

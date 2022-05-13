@@ -1,7 +1,14 @@
 const { checkPathExists } = require('../src/validate.js');
+const { mdLinks } = require('../src/index.js');
 
 describe('checkPathExists', () => {
-  it('should return a promise', () => {
-    expect(typeof checkPathExists).toBe('function');
+    it('Should to be a function', () => {
+      expect(typeof checkPathExists).toBe('function');
+    });
+});
+
+describe('mdLinks', () => {
+  it('Should to be a function', () => {
+    expect(typeof mdLinks).toBe('function');
   });
 });
