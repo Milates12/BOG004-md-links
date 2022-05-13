@@ -1,36 +1,36 @@
 {
-  "name": "@milates12/md-links",
-  "version": "1.0.1",
-  "type": "commonjs",
-  "main": "index.js",
-  "bin": {
-    "md-links": "./src/index.js"
-  },
-  "author": "milates12 <accscortes09@gmail.com>",
-  "license": "MIT",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
-  "scripts": {
-    "test": "jest --verbose --coverage"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Milates12/BOG004-md-links.git"
-  },
-  "engines": {
-    "node": ">=14.x"
-  },
-  "dependencies": {
-    "chalk": "^4.1.0",
-    "commander": "^9.2.0",
-    "marked": "^4.0.15",
-    "node-fetch": "^3.2.4"
-  },
-  "devDependencies": {
-    "eslint": "^8.14.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "jest": "^28.0.2"
-  }
+    "name": "@milates12/md-links",
+    "version": "1.0.3",
+    "type": "commonjs",
+    "main": "index.js",
+    "bin": {
+        "md-links": "./src/index.js"
+    },
+    "author": "@milates12 <accscortes09@gmail.com>",
+    "license": "MIT",
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/@milates"
+    },
+    "scripts": {
+        "test": "jest --verbose --coverage"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Milates12/BOG004-md-links.git"
+    },
+    "engines": {
+        "node": ">=14.x"
+    },
+    "dependencies": {
+        "chalk": "^4.1.0",
+        "commander": "^9.2.0",
+        "marked": "^4.0.15",
+        "node-fetch": "^3.2.4"
+    },
+    "devDependencies": {
+        "eslint": "^8.14.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-plugin-import": "^2.26.0",
+        "jest": "^28.0.2"
+    }
 }
