@@ -1,22 +1,22 @@
 {
     "name": "@milates12/md-links",
-    "version": "1.0.3",
+    "version": "1.0.8",
+    "description": "This is a library that allows you to find links in files with extension .md",
+    "keywords": ["mdFiles", "mdLinksValidator"],
     "type": "commonjs",
-    "main": "index.js",
+    "main": "src/index.js",
     "bin": {
-        "md-links": "./src/index.js"
+        "md-links": "src/index.js"
     },
     "author": "@milates12 <accscortes09@gmail.com>",
     "license": "MIT",
-    "publishConfig": {
-        "registry": "https://npm.pkg.github.com/@milates"
-    },
     "scripts": {
         "test": "jest --verbose --coverage"
     },
+    "homepage": "https://github.com/Milates12/md-links",
     "repository": {
         "type": "git",
-        "url": "https://github.com/Milates12/BOG004-md-links.git"
+        "url": "https://github.com/Milates12/md-links"
     },
     "engines": {
         "node": ">=14.x"

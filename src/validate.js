@@ -11,6 +11,7 @@ const chalk = require('chalk');
 // Validando si esxiste o no existe la ruta
 const checkPathExists = (route) => new Promise((res, rej) => {
     fs.access(route, fs.constants.F_OK, (err) => {
+        // console.log(err);
         if (!err) {
             const pathResolve = path.resolve(route);
             // console.log(pathResolve);
@@ -80,10 +81,10 @@ const httpReq = (objLinks) => {
         return fetch(link.href).then((response) => {
             const newLink = {
                 href: link.href,
-                    title: link.title,
-                    file: link.file,
-                    status: response.status,
-                    statusText: 'FAIL',
+                title: link.title,
+                file: link.file,
+                status: response.status,
+                statusText: 'FAIL',
             };
             if (response.status >= 200 && response.status < 400) {
                 newLink.statusText = response.statusText;
