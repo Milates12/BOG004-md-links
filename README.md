@@ -26,7 +26,7 @@ Within an open source community, we have been proposed to create a tool using [N
 
 ## 4. Usage
 
-###**JavaScript API**
+### **JavaScript API**
 The module must be imported into the Node.js scripts as follows:
 
 `mdLinks(path, options)`
@@ -87,7 +87,7 @@ mdLinks("./some/example.md", { stats: true })
 mdLinks("./some/example.md", { validate: true, stats: true })
     // => [{ total, unique, broken }, ...]
 ```
-####**CLI:**
+### **CLI:**
 
 The executable of our application is executed as follows through the **terminal**:
 

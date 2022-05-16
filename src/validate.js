@@ -5,13 +5,12 @@ const { marked } = require('marked');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 const chalk = require('chalk');
-
 // const rutaRelativa = process.argv[2]
-// const rutaRelativa = '../../../MD-fuera';
+// const rutaRelativa = '../../../dir';
 // Validando si esxiste o no existe la ruta
 const checkPathExists = (route) => new Promise((res, rej) => {
-    fs.access(route, fs.constants.F_OK, (err) => {
-        // console.log(err);
+    fs.access(route, (err) => {
+        console.log(err);
         if (!err) {
             const pathResolve = path.resolve(route);
             // console.log(pathResolve);
