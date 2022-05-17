@@ -31,15 +31,19 @@ const mdLinks = (path, options) => {
         .then((arr) => {
         if (options.validate && !options.stats) {
             httpReq(arr).then((response) => {
+                console.log(response);
                 res(response);
             });
         } else if (options.stats && !options.validate) {
+            console.log(optionStats(arr));
             res(optionStats(arr));
         } else if (options.stats && options.validate) {
             httpReq(arr).then((response) => {
+                console.log(statsAndValidate(response));
                 res(statsAndValidate(response));
             });
         } if (!options.validate && !options.stats) {
+            console.log(arr);
             res(arr);
         }
     })
@@ -47,7 +51,7 @@ const mdLinks = (path, options) => {
     });
 };
 
-mdLinks(route, options).then((res) => console.log(res));
+mdLinks(route, options).then((res) => res);
 // .then((res) => console.log(res));
 
 module.exports = { mdLinks };
