@@ -28,11 +28,11 @@ const saveFiles = (route) => {
         arrPath.push(route);
     } else {
         fs.readdirSync(route).forEach((file) => {
-            const saveFiles = path.join(route, file);
-            if (fs.statSync(saveFiles).isDirectory()) {
-                arrPath = arrPath.concat(saveFilesMD(saveFiles));
+            const getFiles = path.join(route, file);
+            if (fs.statSync(getFiles).isDirectory()) {
+                arrPath = arrPath.concat(saveFiles(getFiles));
             } else {
-                arrPath.push(saveFiles);
+                arrPath.push(getFiles);
             }
         });
     }
