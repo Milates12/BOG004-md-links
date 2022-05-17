@@ -1,122 +1,68 @@
-const {
-  checkPathExists,
-  optionStats,
-  statsAndValidate,
-  filterMD,
-} = require('../src/validate.js');
+const { mdLinks } = require('../src/index.js');
 
-// jest.mock('access');
+const path = 'ejemploMD';
 
-const arrStats = [
-  {
-    href: 'https://docs.microsoft.com/sql/t-sql/statements/set-transaction-isolation-level-transact-sql',
-    title: 'SET TRANSACTION ISOLATION LEVEL',
-    file: 'C:\\Users\\Camila\\Desktop\\dir\\ejemplo2.md',
-  },
-  {
-    href: 'https://github.com/Azure/azure-content/blob/master/contributor-guide/contributor-guide-index.md',
-    title: 'contributor guide index',
-    file: 'C:\\Users\\Camila\\Desktop\\dir\\ejemplo2.md',
-  },
-];
-
-const arrStatsWithStatus = [
-  {
-    href: 'https://docs.microsoft.com/sql/t-sql/statements/set-transaction-isolation-level-transact-sql',
-    title: 'SET TRANSACTION ISOLATION LEVEL',
-    file: 'C:\\Users\\Camila\\Desktop\\dir\\ejemplo2.md',
-    status: 200,
-    statusText: 'OK',
-  },
-  {
-    href: 'https://github.com/Azure/azure-content/blob/master/contributor-guide/contributor-guide-index.md',
-    title: 'contributor guide index',
-    file: 'C:\\Users\\Camila\\Desktop\\dir\\ejemplo2.md',
-    status: 404,
-    statusText: 'FAIL',
-  },
-];
-
-const mdFilter = [
-  'C:\\Users\\Camila\\Desktop\\archivosrotos.md',
-  'C:\\Users\\Camila\\Desktop\\dir\\dibujito.png',
-  'C:\\Users\\Camila\\Desktop\\dir\\ejemplo.md',
-  'C:\\Users\\Camila\\Desktop\\bye.txt',
-  'C:\\Users\\Camila\\Desktop\\dir\\ejemplo2.md',
-  'C:\\Users\\Camila\\Desktop\\dir\\hola.txt',
-];
-
-const filterWithoutMD = [
-  'C:\\Users\\Camila\\Desktop\\dir\\dibujito.png',
-  'C:\\Users\\Camila\\Desktop\\bye.txt',
-  'C:\\Users\\Camila\\Desktop\\dir\\hola.txt',
-];
-
-// const path = '../../dir/ejemplo.md';
-// const res = [
-//   {
-//     href: 'https://docs.microsoft.com/sql/t-sql/statements/set-transaction-isolation-level-transact-sql',
-//     title: 'SET TRANSACTION ISOLATION LEVEL',
-//     file: 'C:\\Users\\Camila\\Desktop\\dir\\ejemplo.md',
-//   },
-//   {
-//     href: 'https://github.com/Azure/azure-content/blob/master/contributor-guide/contributor-guide-index.md',
-//     title: 'contributor guide index',
-//     file: 'C:\\Users\\Camila\\Desktop\\dir\\ejemplo.md',
-//   },
-// ];
-
-// describe("access", () => {
-//   const access = require('access');
-//   const path = '../../dir/ejemplo.m'
-// it("validateLink", () => {
-//   expect(checkPathExists(path, err)).rejects.toEqual(objectResolve);
-// });
-
-describe('checkPathExists', () => {
-  it('should return a promise', () => {
-    expect(typeof checkPathExists).toBe('function');
+describe('mdLinks', () => {
+  it('should be a function', () => {
+      expect(typeof mdLinks).toBe('function');
   });
-});
-
-describe('optionStats', () => {
-  it('should return a function', () => {
-    expect(typeof optionStats).toBe('function');
+  it('Should be returned a promise', (done) => {
+    expect(mdLinks('ejemploMD', {}) instanceof Promise).toBeTruthy();
+    done();
   });
-  it('should return an object with the total value of links and unique links', () => {
-    expect(optionStats(arrStats)).toEqual({ total: 2, unique: 2 });
+  it('It should return an array with href, title and file', (done) => {
+    mdLinks(path, {}).then((response) => {
+      const expected = [
+        {
+          href: 'https://docs.microsoft.com/sql/t-sql/statements/set-transaction-isolation-level-transact-sql',
+          title: 'SET TRANSACTION ISOLATION LEVEL',
+          file: 'C:\\Users\\Camila\\Desktop\\PROYECTOS\\BOG004-md-links\\ejemploMD\\hola.md',
+        },
+        {
+          href: 'https://github.com/Azure/azure-content/blob/master/contributor-guide/contributor-guide-index.md',
+          title: 'contributor guide index',
+          file: 'C:\\Users\\Camila\\Desktop\\PROYECTOS\\BOG004-md-links\\ejemploMD\\hola.md',
+        },
+      ];
+      // console.log(response);
+      expect(response).toStrictEqual(expected);
+      done();
+    });
   });
-  it('should return an object with the total value of links and unique links', () => {
-    expect(optionStats(arrStatsWithStatus)).toEqual({ total: 2, unique: 2 });
+  it('It should return an array with href, title, file, status and statusText', (done) => {
+    mdLinks(path, { validate: true }).then((response) => {
+      const expected = [
+        {
+          href: 'https://docs.microsoft.com/sql/t-sql/statements/set-transaction-isolation-level-transact-sql',
+          title: 'SET TRANSACTION ISOLATION LEVEL',
+          file: 'C:\\Users\\Camila\\Desktop\\PROYECTOS\\BOG004-md-links\\ejemploMD\\hola.md',
+          status: 200,
+          statusText: 'OK',
+        },
+        {
+          href: 'https://github.com/Azure/azure-content/blob/master/contributor-guide/contributor-guide-index.md',
+          title: 'contributor guide index',
+          file: 'C:\\Users\\Camila\\Desktop\\PROYECTOS\\BOG004-md-links\\ejemploMD\\hola.md',
+          status: 404,
+          statusText: 'FAIL',
+        },
+      ];
+      expect(response).toStrictEqual(expected);
+      done();
+    });
   });
-});
-
-describe('statsAndValidate', () => {
-  it('should return a function', () => {
-    expect(typeof optionStats).toBe('function');
+  it('It should return an array with href, title, file, status and statusText', (done) => {
+    mdLinks(path, { stats: true }).then((response) => {
+      const expected = { total: 2, unique: 2 };
+      expect(response).toStrictEqual(expected);
+      done();
+    });
   });
-  it('should return an object with the total value of links and unique links', () => {
-    expect(statsAndValidate(arrStats)).not.toEqual({ total: 2, unique: 2, broken: 1 });
-  });
-  it('should return an object with the total value of links and unique links', () => {
-    expect(statsAndValidate(arrStatsWithStatus)).toEqual({ total: 2, unique: 2, broken: 1 });
-  });
-});
-
-describe('filterMD', () => {
-  it('should to be a function', () => {
-    expect(typeof filterMD).toBe('function');
-  });
-  it('should return an array with file paths with extension .md', () => {
-    return expect(filterMD(mdFilter)).resolves.toEqual([
-      'C:\\Users\\Camila\\Desktop\\archivosrotos.md',
-      'C:\\Users\\Camila\\Desktop\\dir\\ejemplo.md',
-      'C:\\Users\\Camila\\Desktop\\dir\\ejemplo2.md',
-    ]);
-  });
-  it('should return an array with file paths with extension .md', () => {
-    return filterMD(filterWithoutMD).catch((response) => {
-      expect(response).toBe(console.error('Please enter a directory with .md files inside or files with .md extension'));
+  it('It should return an array with href, title, file, status and statusText', (done) => {
+    mdLinks(path, { validate: true, stats: true }).then((response) => {
+      const expected = { total: 2, unique: 2, broken: 1 };
+      expect(response).toEqual(expected);
+      done();
     });
   });
 });

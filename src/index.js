@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const {
     checkPathExists,
-    saveFilesMD,
+    saveFiles,
     filterMD,
     getLinks,
     httpReq,
@@ -22,29 +22,32 @@ if (process.argv.includes('--stats')) {
 }
 
 const mdLinks = (path, options) => {
-    checkPathExists(path)
-    .then((arrPath) => saveFilesMD(arrPath))
-    .then((filesMd) => filterMD(filesMd))
-    .then((links) => getLinks(links))
-    .then((arr) => arr.flat())
-    .then((arr) => {
+    return new Promise((res) => {
+        checkPathExists(path)
+        .then((arrPath) => saveFiles(arrPath))
+        .then((filesMd) => filterMD(filesMd))
+        .then((links) => getLinks(links))
+        .then((arr) => arr.flat())
+        .then((arr) => {
         if (options.validate && !options.stats) {
             httpReq(arr).then((response) => {
-                console.log(response);
+                res(response);
             });
         } else if (options.stats && !options.validate) {
-            console.table(optionStats(arr));
+            res(optionStats(arr));
         } else if (options.stats && options.validate) {
             httpReq(arr).then((response) => {
-                console.table(statsAndValidate(response));
+                res(statsAndValidate(response));
             });
         } if (!options.validate && !options.stats) {
-            console.log(arr);
+            res(arr);
         }
     })
     .catch((err) => err);
+    });
 };
 
-mdLinks(route, options);
+mdLinks(route, options).then((res) => console.log(res));
+// .then((res) => console.log(res));
 
 module.exports = { mdLinks };

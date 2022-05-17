@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { marked } = require('marked');
 
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+const fetch = require('node-fetch');
 
 const chalk = require('chalk');
 // const rutaRelativa = process.argv[2]
@@ -10,7 +10,7 @@ const chalk = require('chalk');
 // Validando si esxiste o no existe la ruta
 const checkPathExists = (route) => new Promise((res, rej) => {
     fs.access(route, (err) => {
-        console.log(err);
+        // console.log(err);
         if (!err) {
             const pathResolve = path.resolve(route);
             // console.log(pathResolve);
@@ -22,7 +22,7 @@ const checkPathExists = (route) => new Promise((res, rej) => {
 });
 
 // Obtenemos el arrelo de archivos
-const saveFilesMD = (route) => {
+const saveFiles = (route) => {
     let arrPath = [];
     if (fs.statSync(route).isFile()) {
         arrPath.push(route);
@@ -48,7 +48,7 @@ const filterMD = (arrMD) => new Promise((res, rej) => {
         // console.log(filterFile);
         res(filterFile);
     } if (filterFile.length <= 0) {
-        rej(console.error(chalk.red('Please enter a directory with .md files inside or files with .md extension')));
+        rej(console.log(chalk.red('Please enter a directory with .md files inside or files with .md extension')));
     }
 });
 
@@ -116,7 +116,7 @@ const statsAndValidate = (arr) => {
 
 module.exports = {
     checkPathExists,
-    saveFilesMD,
+    saveFiles,
     filterMD,
     getLinks,
     httpReq,
